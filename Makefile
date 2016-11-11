@@ -6,45 +6,43 @@ TWEETNACL=$(TWEETNACLC) randombytes.h tools.h tweetnacl.h
 all: tweetnacl-decrypt tweetnacl-encrypt tweetnacl-keypair \
      tweetnacl-sigpair tweetnacl-sign tweetnacl-verify
 
-bin: ;
-	mkdir bin
+clean:
+	rm -rf tweetnacl-decrypt tweetnacl-encrypt tweetnacl-keypair \
+     	tweetnacl-sigpair tweetnacl-sign tweetnacl-verify
 
-clean: ;
-	rm -rf bin
-
-tweetnacl-decrypt: bin $(TWEETNACL) tweetnacl-decrypt.c
+tweetnacl-decrypt: $(TWEETNACL) tweetnacl-decrypt.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-decrypt.c \
-		-o bin/tweetnacl-decrypt
+		-o $@
 
-tweetnacl-encrypt: bin $(TWEETNACL) tweetnacl-encrypt.c
+tweetnacl-encrypt: $(TWEETNACL) tweetnacl-encrypt.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-encrypt.c \
-		-o bin/tweetnacl-encrypt
+		-o $@
 
-tweetnacl-keypair: bin $(TWEETNACL) tweetnacl-keypair.c
+tweetnacl-keypair: $(TWEETNACL) tweetnacl-keypair.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-keypair.c \
-		-o bin/tweetnacl-keypair
+		-o $@
 
-tweetnacl-sigpair: bin $(TWEETNACL) tweetnacl-sigpair.c
+tweetnacl-sigpair: $(TWEETNACL) tweetnacl-sigpair.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-sigpair.c \
-		-o bin/tweetnacl-sigpair
+		-o $@
 
-tweetnacl-sign: bin $(TWEETNACL) tweetnacl-sign.c
+tweetnacl-sign: $(TWEETNACL) tweetnacl-sign.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-sign.c \
-		-o bin/tweetnacl-sign
+		-o $@
 
-tweetnacl-verify: bin $(TWEETNACL) tweetnacl-verify.c
+tweetnacl-verify: $(TWEETNACL) tweetnacl-verify.c
 	$(CC) $(CFLAGS) $(TWEETNACLC) tweetnacl-verify.c \
-		-o bin/tweetnacl-verify
+		-o $@
 
 test: ;
 	mkdir tmp
-	bin/tweetnacl-keypair tmp/a.pub tmp/a.sec
-	bin/tweetnacl-keypair tmp/b.pub tmp/b.sec
+	./tweetnacl-keypair tmp/a.pub tmp/a.sec
+	./tweetnacl-keypair tmp/b.pub tmp/b.sec
 	echo 'Secret message!' > tmp/msg01
-	bin/tweetnacl-encrypt tmp/a.sec tmp/b.pub tmp/msg01 tmp/encrypted
-	bin/tweetnacl-decrypt tmp/a.pub tmp/b.sec tmp/encrypted -
-	bin/tweetnacl-sigpair tmp/s.pub tmp/s.sec
+	./tweetnacl-encrypt tmp/a.sec tmp/b.pub tmp/msg01 tmp/encrypted
+	./tweetnacl-decrypt tmp/a.pub tmp/b.sec tmp/encrypted -
+	./tweetnacl-sigpair tmp/s.pub tmp/s.sec
 	echo 'Verified message!' > tmp/msg02
-	bin/tweetnacl-sign tmp/s.sec tmp/msg02 tmp/signed
-	bin/tweetnacl-verify tmp/s.pub tmp/signed -
+	./tweetnacl-sign tmp/s.sec tmp/msg02 tmp/signed
+	./tweetnacl-verify tmp/s.pub tmp/signed -
 	rm -rf tmp
